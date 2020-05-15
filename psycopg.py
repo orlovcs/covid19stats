@@ -2,6 +2,7 @@ import psycopg2 as pg
 import pandas as pd
 import io
 from sqlalchemy import create_engine
+from dataloader import loader
 
 #export PG_HOME=/Library/PostgreSQL/12 
 #export PATH=$PATH:$PG_HOME/bin
@@ -14,11 +15,12 @@ cursor = connection.cursor()
 #engine = create_engine('postgresql://postgres@localhost/consumer_complaints')
 
 #refresh tables
-cursor.execute("DROP TABLE bank_account_complaints;")
-cursor.execute("DROP TABLE credit_card_complaints;")
+#cursor.execute("DROP TABLE bank_account_complaints;")
+#cursor.execute("DROP TABLE credit_card_complaints;")
+#cursor.execute("DROP TABLE credit_card_complaints_df;")
 
 #create the bank_account_complaints table
-cursor.execute("CREATE TABLE bank_account_complaints (\
+cursor.execute("CREATE TABLE IF NOT EXISTS bank_account_complaints (\
  complaint_id text PRIMARY KEY,\
  date_received date,\
  product text,\
@@ -39,7 +41,7 @@ cursor.execute("CREATE TABLE bank_account_complaints (\
  consumer_disputed text);;")
 
 #create the credit_card_complaints table
-cursor.execute("CREATE TABLE credit_card_complaints (\
+cursor.execute("CREATE TABLE IF NOT EXISTS  credit_card_complaints (\
  complaint_id text PRIMARY KEY,\
  date_received date,\
  product text,\
@@ -58,31 +60,11 @@ cursor.execute("CREATE TABLE credit_card_complaints (\
  company_response_to_consumer text,\
  timely_response text,\
  consumer_disputed text);;")
-print("oiw")
- #copy data from csv file
-my_file = open("datasets/Credit_Card_Complaints.csv")
-df = pd.read_csv(my_file)
-#convert df to file-like object in order to use the efficient psycopg copy functions
-#buffer = io.StringIO()
-#df.to_csv(buffer, header=False, index=False)
-#buffer.pos = 0
-#copy in data
-#cursor.copy_from(buffer, 'credit_card_complaints', sep=',')
+
+#initiate loading csv
+loader()
 
 
-
-
-print("oi")
-for complaint in df:
-   print(complaint[complaint_id])
-
-
-
-
-
-#removes table after we are done
-#cursor.execute("DROP TABLE bank_account_complaints;")
-#cursor.execute("DROP TABLE credit_card_complaints;")
 
 #make execution changes permanant
 connection.commit()
