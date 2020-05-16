@@ -1,10 +1,15 @@
-from flask import Flask
+from flask import Flask, request
+from flask_sqlalchemy import SQLAlchemy
+import os
+
 app = Flask(__name__)
 
-@app.route('/')
-def hello_world():
-   s = "Hello World"
-   return s
+app.config.from_object(os.environ['APP_SETTINGS'])
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
-if __name__ == '__main__':
-   app.run()
+from models import Book
+
+@app.route("/")
+def hello():
+    return "Hello World!"
