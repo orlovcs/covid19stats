@@ -4,3 +4,8 @@ Initially this[https://medium.com/@dushan14/create-a-web-application-with-python
 
 
 source env/bin/activate to go into virtenv
+
+
+progress:
+
+![0](progress/0.png)

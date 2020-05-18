@@ -24,7 +24,19 @@ def hello():
     df['month'] = df['month'].apply(lambda x: x.strftime('%b'))
     month_list = df.values.tolist()
 
-    return render_template('bootstrapbare/index.html', month_list = month_list, months = [l[0] for l in month_list])
+    query = 'SELECT index, date FROM us_infections;'
+    ndf = run_query(query) 
+
+    ndf['day'] = pd.to_datetime(ndf['date']).dt.to_period('D')
+    ndf = ndf.groupby(['day']).size().reset_index(name='counts')
+    ndf['sum'] = ndf['counts'].cumsum()
+    ndf['day'] = ndf['day'].apply(lambda x: x.strftime('%x'))
+    day_list = ndf.values.tolist()
+    days = [l[0] for l in day_list]
+    daily_reported = [l[1] for l in day_list]
+    daily_total = [l[2] for l in day_list]
+
+    return render_template('bootstrapbare/index.html', month_list = month_list, months = [l[0] for l in month_list], days = days, daily_reported=daily_reported, daily_total=daily_total  )
 
 
 def run_query(query):

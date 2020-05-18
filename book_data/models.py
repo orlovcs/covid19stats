@@ -30,6 +30,7 @@ class Infections(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     combined_key = db.Column(db.String())
     date = db.Column(db.String())
+    cases = db.Column(db.Integer())
     country_region = db.Column(db.String())
     province_state = db.Column(db.String())
 

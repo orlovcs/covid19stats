@@ -6,6 +6,8 @@ from dataloader import csvloader
 import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter
 import matplotlib.dates as mdates
+import numpy as np
+import datetime
 
 
 
@@ -41,7 +43,6 @@ query = 'SELECT index, date FROM us_infections;'
 df = run_query(query) 
 
 df['month'] = pd.to_datetime(df['date']).dt.to_period('M')
-
 df = df.groupby(['month']).size().reset_index(name='counts')
 df['month'] = df['month'].apply(lambda x: x.strftime('%b'))
 
@@ -50,12 +51,14 @@ month_list = df.values.tolist()
 
 month = [l[0] for l in month_list]
 
-print(month)
 
-#plt.show() 
-#df.plot('month', 'counts', kind='line', ax=ax)
-#fig, ax = plt.subplots(figsize=(15,7))
+query = 'SELECT index, date FROM us_infections;'
+df = run_query(query)
+#convert the dates to a day Period column
+df['day'] = pd.to_datetime(df['date']).dt.to_period('D')
+df = df.groupby(['day']).size().reset_index(name='counts')
+df['sum'] = df['counts'].cumsum()
+print(df.tail(n=15))
 
-#tips_passenger_df = run_query(query)
-#tips_passenger_df.plot.bar(x='tip_amount', y='passenger_count', title='Passenger Amount vs. Tip Amount')
-#plt.show()
+query = 'SELECT count(*) FROM us_infections WHERE date=\'2020-01-22\';'
+print_query(query)
