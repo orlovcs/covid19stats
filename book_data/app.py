@@ -1,6 +1,9 @@
 import os
 from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
+import pandas as pd
+from sqlalchemy import create_engine
+
 
 app = Flask(__name__)
 
@@ -8,42 +11,39 @@ app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-from models import Book
+engine = create_engine(os.environ['DATABASE_URL'])
+
+
+
+from models import Infections
 
 @app.route("/")
 def hello():
-    return "Hello World!"
+    books_df = run_query('SELECT * FROM us_infections LIMIT 10;')
+    return render_template('bootstrapbare/index.html', books = books_df.to_html())
 
-@app.route("/add")
-def add_book():
-    name=request.args.get('name')
-    author=request.args.get('author')
-    published=request.args.get('published')
-    try:
-        book=Book(
-            name=name,
-            author=author,
-            published=published
-        )
-        db.session.add(book)
-        db.session.commit()
-        return "Book added. book id={}".format(book.id)
-    except Exception as e:
-	    return(str(e))
 
-@app.route("/getall")
+def run_query(query):
+   return pd.read_sql(query, con=engine)
+
+@app.route("/get")
 def get_all():
     try:
-        books=Book.query.all()
-        return  jsonify([e.serialize() for e in books])
+        #inf=Infections.query.all()
+        #return  jsonify([e.serialize() for e in inf])
+        books_df = run_query('SELECT * FROM us_infections LIMIT 10;')
+        return render_template('thanks.html', books = books_df.to_html() )
+
+        
+
     except Exception as e:
 	    return(str(e))
+
 
 @app.route("/get/<id_>")
 def get_by_id(id_):
     try:
-        book=Book.query.filter_by(id=id_).first()
-        return jsonify(book.serialize())
+        return jsonify(Infections.serialize())
     except Exception as e:
 	    return(str(e))
 
@@ -54,11 +54,7 @@ def add_book_form():
         author=request.form.get('author')
         published=request.form.get('published')
         try:
-            book=Book(
-                name=name,
-                author=author,
-                published=published
-            )
+          
             db.session.add(book)
             db.session.commit()
             return "Book added. book id={}".format(book.id)

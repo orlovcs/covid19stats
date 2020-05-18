@@ -1,2 +1,6 @@
 
 *.csv
+
+book_data/__pycache__/
+
+covid/__pycache__/

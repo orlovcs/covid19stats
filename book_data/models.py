@@ -23,3 +23,23 @@ class Book(db.Model):
             'author': self.author,
             'published':self.published
         }
+
+class Infections(db.Model):
+    __tablename__ = 'us_infections'
+
+    id = db.Column(db.Integer, primary_key=True)
+    combined_key = db.Column(db.String())
+    date = db.Column(db.String())
+    country_region = db.Column(db.String())
+    province_state = db.Column(db.String())
+
+    def __init__(self, index):
+        self.id = id
+
+    def __repr__(self):
+        return '<id {}>'.format(self.id)
+    
+    def serialize(self):
+        return {
+            'id': self.id, 
+        }
