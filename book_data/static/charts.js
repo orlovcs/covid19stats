@@ -1,19 +1,22 @@
+month_list = null;
+console.log(month_list)
+
 Highcharts.chart('container', {
 
     title: {
-      text: 'Logarithmic axis demo'
+      text: 'American Infections by Month'
     },
   
     xAxis: {
       tickInterval: 1,
-      type: 'logarithmic',
+     
       accessibility: {
         rangeDescription: 'Range: 1 to 10'
       }
     },
   
     yAxis: {
-      type: 'logarithmic',
+    
       minorTickInterval: 0.1,
       accessibility: {
         rangeDescription: 'Range: 0.1 to 1000'
@@ -26,7 +29,7 @@ Highcharts.chart('container', {
     },
   
     series: [{
-      data: [1, 2, 4, 8, 16, 32, 64, 128, 256, 512],
+      data:  [[5, 2], [6, 3], [8, 2]],
       pointStart: 1
     }]
   });

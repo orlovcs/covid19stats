@@ -13,14 +13,18 @@ db = SQLAlchemy(app)
 
 engine = create_engine(os.environ['DATABASE_URL'])
 
-
-
 from models import Infections
 
 @app.route("/")
 def hello():
-    books_df = run_query('SELECT * FROM us_infections LIMIT 10;')
-    return render_template('bootstrapbare/index.html', books = books_df.to_html())
+    query = 'SELECT index, date FROM us_infections;'
+    df = run_query(query) 
+    df['month'] = pd.to_datetime(df['date']).dt.to_period('M')
+    df = df.groupby(['month']).size().reset_index(name='counts')
+    df['month'] = df['month'].to_timestamp
+    month_list = df.values.tolist()
+
+    return render_template('bootstrapbare/index.html', month_list = month_list)
 
 
 def run_query(query):

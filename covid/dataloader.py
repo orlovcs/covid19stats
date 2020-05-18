@@ -15,11 +15,13 @@ def csvloader(engine, file, table):
    
    df = df.rename(columns={'country/region': 'country_region', 'province/state': 'province_state'})
 
-   print(df.head(n=10))
+   df = df[['combined_key', 'date', 'country_region', 'province_state']]
+
+   #print(df.head(n=10))
 
    #if table does not exist, add it to the dbs
      #if table does not exist, add it to the dbs
    try:
-      df.to_sql(table, engine, if_exists='replace')
+      df.to_sql(table, engine, if_exists='fail')
    except ValueError:
         print('Table '+table+' already exists, doing nothing')

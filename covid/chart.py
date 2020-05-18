@@ -20,7 +20,7 @@ cursor = connection.cursor()
 engine = create_engine('postgresql://postgres:root@localhost/covid')
 
 #initiate loading csv
-csvloader(engine, '../datasets/us_confirmed.csv', 'us_infections_og')
+csvloader(engine, '../datasets/us_confirmed.csv', 'us_infections')
 
 #query demos
 
@@ -37,26 +37,20 @@ def run_query(query):
 #Let's plot the passenger amount vs. tip amount
 
 #query = 'SELECT * FROM us_confirmed WHERE "province/state"=\'Arizona\';'
-query = 'SELECT index, date FROM us_confirmed;'
+query = 'SELECT index, date FROM us_infections;'
 df = run_query(query) 
 
 df['month'] = pd.to_datetime(df['date']).dt.to_period('M')
 
-#set date as index
-
-#plot data
-fig, ax = plt.subplots(figsize=(15,7))
 df = df.groupby(['month']).size().reset_index(name='counts')
+df['month'] = df['month'].apply(lambda x: x.strftime('%b'))
 
+products_list = df.values.tolist()
+print(products_list)
 
-df.plot('month', 'counts', kind='line', ax=ax)
-
-
-#plot = df.groupby('month')['index'].count().plot.bar()
-#plot.set(xltitle='Confirmed Infections in US')
-
-
-plt.show()
+#plt.show() 
+#df.plot('month', 'counts', kind='line', ax=ax)
+#fig, ax = plt.subplots(figsize=(15,7))
 
 #tips_passenger_df = run_query(query)
 #tips_passenger_df.plot.bar(x='tip_amount', y='passenger_count', title='Passenger Amount vs. Tip Amount')
