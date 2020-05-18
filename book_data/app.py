@@ -21,10 +21,10 @@ def hello():
     df = run_query(query) 
     df['month'] = pd.to_datetime(df['date']).dt.to_period('M')
     df = df.groupby(['month']).size().reset_index(name='counts')
-    df['month'] = df['month'].to_timestamp
+    df['month'] = df['month'].apply(lambda x: x.strftime('%b'))
     month_list = df.values.tolist()
 
-    return render_template('bootstrapbare/index.html', month_list = month_list)
+    return render_template('bootstrapbare/index.html', month_list = month_list, months = [l[0] for l in month_list])
 
 
 def run_query(query):

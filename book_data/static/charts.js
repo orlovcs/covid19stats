@@ -1,13 +1,13 @@
-month_list = null;
 console.log(month_list)
-
-Highcharts.chart('container', {
+console.log(months)
+Highcharts.chart('infectionsbymonth', {
 
     title: {
       text: 'American Infections by Month'
     },
   
     xAxis: {
+      categories: months,
       tickInterval: 1,
      
       accessibility: {
@@ -29,7 +29,6 @@ Highcharts.chart('container', {
     },
   
     series: [{
-      data:  [[5, 2], [6, 3], [8, 2]],
-      pointStart: 1
+      data:  month_list,
     }]
   });

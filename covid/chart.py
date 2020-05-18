@@ -45,8 +45,12 @@ df['month'] = pd.to_datetime(df['date']).dt.to_period('M')
 df = df.groupby(['month']).size().reset_index(name='counts')
 df['month'] = df['month'].apply(lambda x: x.strftime('%b'))
 
-products_list = df.values.tolist()
-print(products_list)
+
+month_list = df.values.tolist()
+
+month = [l[0] for l in month_list]
+
+print(month)
 
 #plt.show() 
 #df.plot('month', 'counts', kind='line', ax=ax)
