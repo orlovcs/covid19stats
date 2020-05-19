@@ -26,9 +26,20 @@ def run_query(query):
 def hello():
 
     us_infections_monthly = dt.get_monthly_totals(dt.get_us_infections())
+    us_infections_monthly = dt.add_month_name_column(us_infections_monthly)
     us_infections_monthly_html = dt.df_to_html(us_infections_monthly)
 
-    return render_template('bootstrapbare/index.html', us_infections_monthly_html = us_infections_monthly_html )
+    return render_template('dashboard/dashboard.html', us_infections_monthly_html=us_infections_monthly_html )
+
+@app.route("/states.html")
+def get_states():
+    try:
+        monthly_totals_by_state = dt.get_monthly_totals_by_state()
+
+        return render_template('dashboard/states.html', monthly_totals_by_state=monthly_totals_by_state, monthly_totals_by_state_len=len(monthly_totals_by_state) )
+    except Exception as e:
+	    return(str(e))
+
 
 @app.route("/get")
 def get_all():

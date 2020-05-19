@@ -82,18 +82,22 @@ class Data():
     def get_us_infections(self):
         return self.us_infections
 
-    #Desc: Maps get_monthly_totals to each state
-    #Output: List of [State, Dataframe]
-    def get_monthly_totals_by_state(self):
-        all_province_states = get_states(self.us_infections)
-        monthly_province_state_dfs = []
-        for province_state in all_province_states:
-            state_df = self.get_by_state(self.us_infections, province_state)
-            state_monthly_total_df = get_monthly_totals(state_df)
-            monthly_province_state_dfs.append([province_state, state_monthly_total_df])
-        return monthly_province_state_dfs
-
+    def add_month_name_column(self, df):
+        df['day'] = pd.to_datetime(df['date']).dt.to_period('D')
+        df['month_name'] = df['day'].apply(lambda x: x.strftime('%b'))
+        return df
     #Desc: Converts df to bootstrap compatible html table
     #Output: HTML table converted DataFrame
     def df_to_html(self, df):
-        return df.to_html(classes=["table-bordered", "table-striped", "table-hover"])
+        return df.to_html(index=False, classes=["table-bordered", "table-striped", "table-hover", "table-dark"])
+
+    #Desc: Maps get_monthly_totals to each state
+    #Output: List of [State, Dataframe]
+    def get_monthly_totals_by_state(self):
+        all_province_states = self.get_states(self.us_infections)
+        monthly_province_state_dfs = []
+        for province_state in all_province_states:
+            state_df = self.get_by_state(self.us_infections, province_state)
+            state_monthly_total_df = self.get_monthly_totals(state_df)
+            monthly_province_state_dfs.append([province_state, self.df_to_html(state_monthly_total_df)])
+        return monthly_province_state_dfs
