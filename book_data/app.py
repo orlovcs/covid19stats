@@ -2,7 +2,9 @@ import os
 from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 import pandas as pd
+import numpy as np
 from sqlalchemy import create_engine
+import time, datetime
 
 
 app = Flask(__name__)
@@ -15,32 +17,34 @@ engine = create_engine(os.environ['DATABASE_URL'])
 
 from models import Infections
 
-@app.route("/")
-def hello():
-    query = 'SELECT index, date FROM us_infections;'
-    df = run_query(query) 
-    df['month'] = pd.to_datetime(df['date']).dt.to_period('M')
-    df = df.groupby(['month']).size().reset_index(name='counts')
-    df['month'] = df['month'].apply(lambda x: x.strftime('%b'))
-    month_list = df.values.tolist()
-
-    query = 'SELECT index, date FROM us_infections;'
-    ndf = run_query(query) 
-
-    ndf['day'] = pd.to_datetime(ndf['date']).dt.to_period('D')
-    ndf = ndf.groupby(['day']).size().reset_index(name='counts')
-    ndf['sum'] = ndf['counts'].cumsum()
-    ndf['day'] = ndf['day'].apply(lambda x: x.strftime('%x'))
-    day_list = ndf.values.tolist()
-    days = [l[0] for l in day_list]
-    daily_reported = [l[1] for l in day_list]
-    daily_total = [l[2] for l in day_list]
-
-    return render_template('bootstrapbare/index.html', month_list = month_list, months = [l[0] for l in month_list], days = days, daily_reported=daily_reported, daily_total=daily_total  )
-
 
 def run_query(query):
    return pd.read_sql(query, con=engine)
+
+@app.route("/")
+def hello():
+   
+    query = 'SELECT * FROM us_infections;'
+    df = run_query(query)
+    df11 = df.groupby(['date'])['cases'].sum().reset_index()
+    df11['date'] =  pd.to_datetime(df11['date'], format='%Y-%m-%d')
+
+    #df11['date'] = df11['date'].astype(np.int64) // 10**9
+    df11['date'] = df11['date'].dt.strftime('%Y/%m/%d')
+
+    df['month'] = pd.to_datetime(df['date']).dt.to_period('M')
+    df12 = df.groupby(['month'])['cases'].sum().reset_index()
+
+    daily_list = df11.values.tolist()
+    monthly_list = df12.values.tolist()
+
+    days = [l[0] for l in daily_list]
+    numbers = [int(l[1]) for l in daily_list]
+
+    months = [l[0] for l in monthly_list]
+    mnumbers = [int(l[1]) for l in monthly_list]
+
+    return render_template('bootstrapbare/index.html', months=months, mnumbers=mnumbers,days=days,numbers=numbers )
 
 @app.route("/get")
 def get_all():
