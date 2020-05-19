@@ -1,4 +1,8 @@
 from app import db
+import pandas as pd
+from sqlalchemy import create_engine
+import os
+import time, datetime
 
 class Book(db.Model):
     __tablename__ = 'books'
@@ -15,10 +19,10 @@ class Book(db.Model):
 
     def __repr__(self):
         return '<id {}>'.format(self.id)
-    
+
     def serialize(self):
         return {
-            'id': self.id, 
+            'id': self.id,
             'name': self.name,
             'author': self.author,
             'published':self.published
@@ -39,8 +43,57 @@ class Infections(db.Model):
 
     def __repr__(self):
         return '<id {}>'.format(self.id)
-    
+
     def serialize(self):
         return {
-            'id': self.id, 
+            'id': self.id,
         }
+    #CUSTOM FUNC
+    def test():
+        return "Hi"
+
+class Data():
+    us_infections = None
+    us_deaths = None
+    engine = None
+
+    def run_query(self, query):
+       return pd.read_sql(query, con=self.engine)
+
+    def __init__(self):
+        self.engine = create_engine(os.environ['DATABASE_URL'])
+        self.us_infections = self.run_query('SELECT * FROM us_infections;')
+
+    #Desc: Groups cases by day then selects rows for last day of each month
+    #Output: Dataframe
+    def get_monthly_totals(self, df):
+        df['day'] = pd.to_datetime(df['date']).dt.to_period('D')
+        df = df.groupby(['day','date'])['cases'].sum().reset_index()
+        df = df.iloc[df.reset_index().groupby(pd.to_datetime(df['date']).dt.to_period('M'))['index'].idxmax()]
+        return df
+
+    def get_states(self, df):
+        return df.province_state.unique()
+    #Desc: Filters df rows by state
+    #Output: Dataframe
+    def get_by_state(self, df, state):
+        return df.loc[df['province_state'] == state]
+
+    def get_us_infections(self):
+        return self.us_infections
+
+    #Desc: Maps get_monthly_totals to each state
+    #Output: List of [State, Dataframe]
+    def get_monthly_totals_by_state(self):
+        all_province_states = get_states(self.us_infections)
+        monthly_province_state_dfs = []
+        for province_state in all_province_states:
+            state_df = self.get_by_state(self.us_infections, province_state)
+            state_monthly_total_df = get_monthly_totals(state_df)
+            monthly_province_state_dfs.append([province_state, state_monthly_total_df])
+        return monthly_province_state_dfs
+
+    #Desc: Converts df to bootstrap compatible html table
+    #Output: HTML table converted DataFrame
+    def df_to_html(self, df):
+        return df.to_html(classes=["table-bordered", "table-striped", "table-hover"])

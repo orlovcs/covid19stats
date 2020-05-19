@@ -15,36 +15,20 @@ db = SQLAlchemy(app)
 
 engine = create_engine(os.environ['DATABASE_URL'])
 
-from models import Infections
+from models import Data, Infections
 
+dt = Data()
 
 def run_query(query):
    return pd.read_sql(query, con=engine)
 
 @app.route("/")
 def hello():
-   
-    query = 'SELECT * FROM us_infections;'
-    df = run_query(query)
-    df11 = df.groupby(['date'])['cases'].sum().reset_index()
-    df11['date'] =  pd.to_datetime(df11['date'], format='%Y-%m-%d')
 
-    #df11['date'] = df11['date'].astype(np.int64) // 10**9
-    df11['date'] = df11['date'].dt.strftime('%Y/%m/%d')
+    us_infections_monthly = dt.get_monthly_totals(dt.get_us_infections())
+    us_infections_monthly_html = dt.df_to_html(us_infections_monthly)
 
-    df['month'] = pd.to_datetime(df['date']).dt.to_period('M')
-    df12 = df.groupby(['month'])['cases'].sum().reset_index()
-
-    daily_list = df11.values.tolist()
-    monthly_list = df12.values.tolist()
-
-    days = [l[0] for l in daily_list]
-    numbers = [int(l[1]) for l in daily_list]
-
-    months = [l[0] for l in monthly_list]
-    mnumbers = [int(l[1]) for l in monthly_list]
-
-    return render_template('bootstrapbare/index.html', months=months, mnumbers=mnumbers,days=days,numbers=numbers )
+    return render_template('bootstrapbare/index.html', us_infections_monthly_html = us_infections_monthly_html )
 
 @app.route("/get")
 def get_all():
@@ -54,7 +38,7 @@ def get_all():
         books_df = run_query('SELECT * FROM us_infections LIMIT 10;')
         return render_template('thanks.html', books = books_df.to_html() )
 
-        
+
 
     except Exception as e:
 	    return(str(e))
@@ -74,7 +58,7 @@ def add_book_form():
         author=request.form.get('author')
         published=request.form.get('published')
         try:
-          
+
             db.session.add(book)
             db.session.commit()
             return "Book added. book id={}".format(book.id)

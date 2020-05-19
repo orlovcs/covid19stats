@@ -11,7 +11,7 @@ import datetime
 import time
 
 
-#export PG_HOME=/Library/PostgreSQL/12 
+#export PG_HOME=/Library/PostgreSQL/12
 #export PATH=$PATH:$PG_HOME/bin
 
 #connect to the database
@@ -24,8 +24,6 @@ engine = create_engine('postgresql://postgres:root@localhost/covid')
 #initiate loading csv
 csvloader(engine, '../datasets/us_confirmed.csv', 'us_infections')
 
-#query demos
-
 def run_command(command):
    cursor.execute(command)
    print(cursor.statusmessage)
@@ -36,23 +34,41 @@ def print_query(query):
 def run_query(query):
    return pd.read_sql(query, con=engine)
 
-#Let's plot the passenger amount vs. tip amount
-
-# #query = 'SELECT * FROM us_confirmed WHERE "province/state"=\'Arizona\';'
 query = 'SELECT * FROM us_infections;'
 df = run_query(query)
 
+df['day'] = pd.to_datetime(df['date']).dt.to_period('D')
 
-print(df.head(n=2))
-df11 = df.groupby(['date'])['cases'].sum().reset_index()
+#END OF MONTH CASES IN US
+monthyl_us_df = df.groupby(['day','date'])['cases'].sum().reset_index()
+monthyl_us_df = monthyl_us_df.iloc[df.reset_index().groupby(pd.to_datetime(monthyl_us_df['date']).dt.to_period('M'))['index'].idxmax()]
 
+#END OF MONTH CASES IN AL
+monthly_al_df = df.loc[df['province_state'] == 'Alabama']
+monthly_al_df = monthly_al_df.groupby(['day','date'])['cases'].sum().reset_index()
+monthly_al_df = monthly_al_df.iloc[df.reset_index().groupby(pd.to_datetime(monthly_al_df['date']).dt.to_period('M'))['index'].idxmax()]
 
+#LIST OF UNIQUE province_state VALUES
+all_province_state = df.province_state.unique()
+print(all_province_state)
 
-df['ts'] = pd.DatetimeIndex(df11.date).asi8
-print (df)
+#GET MONTHLY CASES FOR EVERY province_state
+monthly_province_state_dfs = []
+for province_state in all_province_state:
+    new_monthly_df = df.loc[df['province_state'] == province_state]
+    new_monthly_df = new_monthly_df.groupby(['day','date'])['cases'].sum().reset_index()
+    new_monthly_df = new_monthly_df.iloc[df.reset_index().groupby(pd.to_datetime(new_monthly_df['date']).dt.to_period('M'))['index'].idxmax()]
+    monthly_province_state_dfs.append(new_monthly_df)
+print(len(monthly_province_state_dfs))
 
+#df.sort_values('day').groupby('day').tail(1)
+#print(df.tail())
 
-# df['month'] = pd.to_datetime(df['date']).dt.to_period('M')
+#df11 = df.groupby(['date'])['cases'].sum().reset_index()
+#df['month'] = pd.to_datetime(df['date']).dt.to_period('M')
+#df = df.sort_values('date').groupby('month').tail(1)
+#print(df.head())
+
 # df = df.groupby(['month']).size().reset_index(name='counts')
 # df['month'] = df['month'].apply(lambda x: x.strftime('%b'))
 
