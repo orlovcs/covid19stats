@@ -13,11 +13,11 @@ def csvloader(engine, file, table):
    df = df.rename(columns=lambda x: x.replace(' ', '_'))
    df = df.rename(columns=lambda x: x.strip())
    
-   df = df.rename(columns={'country/region': 'country_region', 'province/state': 'province_state'})
+   df = df.rename(columns={'country/region': 'country_region', 'province/state': 'province_state', 'case':'cases'})
 
-   df = df[['combined_key', 'date', 'country_region', 'province_state']]
+   df = df[['combined_key', 'date', 'country_region', 'cases', 'province_state']]
 
-   #print(df.head(n=10))
+   print(df.head(n=10))
 
    #if table does not exist, add it to the dbs
      #if table does not exist, add it to the dbs

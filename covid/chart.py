@@ -8,7 +8,7 @@ from matplotlib.dates import DateFormatter
 import matplotlib.dates as mdates
 import numpy as np
 import datetime
-
+import time
 
 
 #export PG_HOME=/Library/PostgreSQL/12 
@@ -38,27 +38,37 @@ def run_query(query):
 
 #Let's plot the passenger amount vs. tip amount
 
-#query = 'SELECT * FROM us_confirmed WHERE "province/state"=\'Arizona\';'
-query = 'SELECT index, date FROM us_infections;'
-df = run_query(query) 
-
-df['month'] = pd.to_datetime(df['date']).dt.to_period('M')
-df = df.groupby(['month']).size().reset_index(name='counts')
-df['month'] = df['month'].apply(lambda x: x.strftime('%b'))
-
-
-month_list = df.values.tolist()
-
-month = [l[0] for l in month_list]
-
-
-query = 'SELECT index, date FROM us_infections;'
+# #query = 'SELECT * FROM us_confirmed WHERE "province/state"=\'Arizona\';'
+query = 'SELECT * FROM us_infections;'
 df = run_query(query)
-#convert the dates to a day Period column
-df['day'] = pd.to_datetime(df['date']).dt.to_period('D')
-df = df.groupby(['day']).size().reset_index(name='counts')
-df['sum'] = df['counts'].cumsum()
-print(df.tail(n=15))
 
-query = 'SELECT count(*) FROM us_infections WHERE date=\'2020-01-22\';'
-print_query(query)
+
+print(df.head(n=2))
+df11 = df.groupby(['date'])['cases'].sum().reset_index()
+
+
+
+df['ts'] = pd.DatetimeIndex(df11.date).asi8
+print (df)
+
+
+# df['month'] = pd.to_datetime(df['date']).dt.to_period('M')
+# df = df.groupby(['month']).size().reset_index(name='counts')
+# df['month'] = df['month'].apply(lambda x: x.strftime('%b'))
+
+
+# month_list = df.values.tolist()
+
+# month = [l[0] for l in month_list]
+
+
+# query = 'SELECT index, date FROM us_infections;'
+# df = run_query(query)
+# #convert the dates to a day Period column
+# df['day'] = pd.to_datetime(df['date']).dt.to_period('D')
+# df = df.groupby(['day']).size().reset_index(name='counts')
+# df['sum'] = df['counts'].cumsum()
+# print(df.tail(n=15))
+
+# query = 'SELECT count(*) FROM us_infections WHERE date=\'2020-01-22\';'
+# print_query(query)
