@@ -250,14 +250,19 @@
 
 
     <div class="row">
+      <script type="text/javascript">
+           all_province_states = {{all_province_states|safe}}
+           monthly_province_state_dfs = {{monthly_province_state_dfs|safe}}
+
+        </script>
     <div class="col-lg-4">
       <div class="card ">
         <div class="card-header">
           <h4 class="card-title">Hello</h4>
+
         </div>
         <div class="card-body">
-          {{var states = states|safe }}
-          {{var months = months|safe }
+
           <canvas id="Hello"></canvas>
         </div>
       </div>
@@ -368,6 +373,10 @@
     <script>
       $(document).ready(function() {
         $().ready(function() {
+
+
+
+
           $sidebar = $('.sidebar');
           $navbar = $('.navbar');
 

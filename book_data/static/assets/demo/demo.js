@@ -424,8 +424,8 @@ demo = {
 
 
 //custom list
-  console.log(months);
-  console.log(states);
+  console.log(all_province_states);
+  console.log(monthly_province_state_dfs);
 
   var myStringArray = ["Hello","World"];
   var myStringArray2 = [[1,2],[3,4]];
