@@ -463,6 +463,8 @@ console.log(monthly_province_state_dfs)
       options: gradientChartOptionsConfigurationWithTooltipGreen
     });
 
+    
+
   }
 
 
