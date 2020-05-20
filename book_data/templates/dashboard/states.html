@@ -32,7 +32,7 @@
       <div class="sidebar-wrapper">
         <div class="logo">
           <a href="http://www.creative-tim.com" class="simple-text logo-mini">
-            
+
           </a>
           <a href="http://www.creative-tim.com" class="simple-text logo-normal">
             Data
@@ -249,21 +249,30 @@
 
 
 
-        <div class="row">
-          {%for i in range(0, monthly_totals_by_state_len)%}
-          <div class="col-lg-4">
-            <div class="card ">
-              <div class="card-header">
-                <h4 class="card-title">{{monthly_totals_by_state[i][0]}}</h4>
-              </div>
-              <div class="card-body">
-                {{ monthly_totals_by_state[i][1]|safe }}
-              </div>
-            </div>
-          </div>
-          {%endfor%}
+    <div class="row">
+    <div class="col-lg-4">
+      <div class="card ">
+        <div class="card-header">
+          <h4 class="card-title">Hello</h4>
         </div>
-
+        <div class="card-body">
+          {{var states = states|safe }}
+          {{var months = months|safe }
+          <canvas id="Hello"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card ">
+        <div class="card-header">
+          <h4 class="card-title">World</h4>
+        </div>
+        <div class="card-body">
+          <canvas id="World"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
       </div>

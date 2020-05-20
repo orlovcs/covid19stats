@@ -92,12 +92,14 @@ class Data():
         return df.to_html(index=False, classes=["table-bordered", "table-striped", "table-hover", "table-dark"])
 
     #Desc: Maps get_monthly_totals to each state
-    #Output: List of [State, Dataframe]
+    #Output: List of [[States], [Dataframes]]
     def get_monthly_totals_by_state(self):
         all_province_states = self.get_states(self.us_infections)
+        months = []
         monthly_province_state_dfs = []
         for province_state in all_province_states:
             state_df = self.get_by_state(self.us_infections, province_state)
             state_monthly_total_df = self.get_monthly_totals(state_df)
-            monthly_province_state_dfs.append([province_state, self.df_to_html(state_monthly_total_df)])
-        return monthly_province_state_dfs
+            monthly_province_state_dfs.append(state_monthly_total_df)
+            months.append(months)
+        return [months, monthly_province_state_dfs]

@@ -34,9 +34,9 @@ def hello():
 @app.route("/states.html")
 def get_states():
     try:
-        monthly_totals_by_state = dt.get_monthly_totals_by_state()
+    
 
-        return render_template('dashboard/states.html', monthly_totals_by_state=monthly_totals_by_state, monthly_totals_by_state_len=len(monthly_totals_by_state) )
+        return render_template('dashboard/states.html' )
     except Exception as e:
 	    return(str(e))
 
