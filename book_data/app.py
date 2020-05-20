@@ -37,9 +37,19 @@ def get_states():
         states_infections_monthly = dt.get_monthly_totals_by_state()
         all_province_states = states_infections_monthly[0]
         monthly_province_state_dfs = states_infections_monthly[1]
-        monthly_province_state_dfs = [x.tolist() for x in monthly_province_state_dfs]
+        dats = []
+        #do this in models.py
+        for dat in monthly_province_state_dfs:
+            months = dat[['month_name']]
+            counts = dat[['cases']]
+            months = months.values.tolist() 
+            counts = counts.values.tolist() 
+            dat = [months, counts]
+            dats.append(dat)
 
-        return render_template('dashboard/states.html', all_province_states=all_province_states, monthly_province_state_dfs=monthly_province_state_dfs )
+        
+
+        return render_template('dashboard/states.html', all_province_states=all_province_states, all_province_states_len=len(all_province_states),  monthly_province_state_dfs=dats )
     except Exception as e:
 	    return(str(e))
 

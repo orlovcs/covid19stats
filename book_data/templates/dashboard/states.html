@@ -251,32 +251,28 @@
 
     <div class="row">
       <script type="text/javascript">
-           all_province_states = {{all_province_states|safe}}
-           monthly_province_state_dfs = {{monthly_province_state_dfs|safe}}
-
+            all_province_states = {{ all_province_states|safe }}
+            monthly_province_state_dfs = {{monthly_province_state_dfs|safe}}
         </script>
-    <div class="col-lg-4">
-      <div class="card ">
-        <div class="card-header">
-          <h4 class="card-title">Hello</h4>
 
-        </div>
-        <div class="card-body">
+    {%for i in range(0, all_province_states_len)%} 
+      
+        
+    
 
-          <canvas id="Hello"></canvas>
+      <div class="col-lg-4">
+        <div class="card ">
+          <div class="card-header">
+            <h4 class="card-title">{{all_province_states[i]}}</h4>
+          </div>
+          <div class="card-body">
+            <canvas id="{{all_province_states[i]}}"></canvas>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="col-lg-4">
-      <div class="card ">
-        <div class="card-header">
-          <h4 class="card-title">World</h4>
-        </div>
-        <div class="card-body">
-          <canvas id="World"></canvas>
-        </div>
-      </div>
-    </div>
+
+    {%endfor%} 
+
   </div>
 
 

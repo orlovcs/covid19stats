@@ -421,25 +421,23 @@ demo = {
 
     });
 
-
-
+    
+console.log(monthly_province_state_dfs)
 //custom list
-  console.log(all_province_states);
-  console.log(monthly_province_state_dfs);
 
-  var myStringArray = ["Hello","World"];
+  var myStringArray = all_province_states;
   var myStringArray2 = [[1,2],[3,4]];
   var arrayLength = myStringArray.length;
   for (var i = 0; i < arrayLength; i++) {
 
-    var ctx = document.getElementById(myStringArray[i]).getContext("2d");
+    var ctx = document.getElementById(all_province_states[i]).getContext("2d");
     var gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
     gradientStroke.addColorStop(1, 'rgba(66,134,121,0.15)');
     gradientStroke.addColorStop(0.4, 'rgba(66,134,121,0.0)'); //green colors
     gradientStroke.addColorStop(0, 'rgba(66,134,121,0)'); //green colors
 
     var data = {
-      labels: ['JUL', 'AUG', 'SEP', 'OCT', 'NOV'],
+      labels: monthly_province_state_dfs[i][0],
       datasets: [{
         label: "Cases",
         fill: true,
@@ -455,7 +453,7 @@ demo = {
         pointHoverRadius: 4,
         pointHoverBorderWidth: 15,
         pointRadius: 4,
-        data: myStringArray2[i],
+        data: monthly_province_state_dfs[i][1],
       }]
     };
 

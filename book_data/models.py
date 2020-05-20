@@ -96,8 +96,12 @@ class Data():
     def get_monthly_totals_by_state(self):
         all_province_states = self.get_states(self.us_infections)
         monthly_province_state_dfs = []
+        states = []
         for province_state in all_province_states:
             state_df = self.get_by_state(self.us_infections, province_state)
             state_monthly_total_df = self.get_monthly_totals(state_df)
+            state_monthly_total_df = self.add_month_name_column(state_monthly_total_df)
+            state_monthly_total_df = state_monthly_total_df[['cases', 'month_name']]
             monthly_province_state_dfs.append(state_monthly_total_df)
-        return [all_province_states, monthly_province_state_dfs]
+            states.append(province_state)
+        return [states, monthly_province_state_dfs]
