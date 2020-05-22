@@ -2611,10 +2611,6 @@ a[data-toggle="collapse"][aria-expanded="true"] .caret,
   color: #2c2c2c;
 }
 
-.bd-docs .navbar .navbar-brand {
-  position: relative;
-  margin-top: 0;
-}
 
 .bd-docs .bd-example {
   background: linear-gradient(#1e1e2f, #1e1e24);
@@ -2937,14 +2933,7 @@ a[data-toggle="collapse"][aria-expanded="true"] .caret,
   background-color: #fd5d93 !important;
 }
 
-.navbar .navbar-brand {
-  position: fixed;
-  color: #FFFFFF;
-  margin-left: 17px;
-  margin-top: -15px;
-  text-transform: uppercase;
-  font-size: 1rem;
-}
+
 
 .navbar .navbar-toggle button:focus,
 .navbar .navbar-toggler {
@@ -4203,7 +4192,7 @@ table.tablesorter thead tr .headerSortDown {
 }
 
 .main-panel .content {
-  padding: 80px 30px 30px 280px;
+  padding: 80px 30px 30px 30px;
   min-height: calc(100vh - 70px);
 }
 

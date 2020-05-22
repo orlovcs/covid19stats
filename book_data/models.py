@@ -72,6 +72,13 @@ class Data():
         df = df.iloc[df.reset_index().groupby(pd.to_datetime(df['date']).dt.to_period('M'))['index'].idxmax()]
         return df
 
+    #Desc: Groups cases by day
+    #Output: Dataframe
+    def get_daily_totals(self, df):
+        df['day'] = pd.to_datetime(df['date']).dt.to_period('D')
+        df = df.groupby(['day','date'])['cases'].sum().reset_index()
+        return df
+
     def get_states(self, df):
         return df.province_state.unique()
     #Desc: Filters df rows by state
@@ -86,6 +93,12 @@ class Data():
         df['day'] = pd.to_datetime(df['date']).dt.to_period('D')
         df['month_name'] = df['day'].apply(lambda x: x.strftime('%b'))
         return df
+
+    def add_day_name_column(self, df):
+        df['day'] = pd.to_datetime(df['date']).dt.to_period('D')
+        df['day_name'] = df['day'].apply(lambda x: x.strftime('%b %d'))
+        return df
+
     #Desc: Converts df to bootstrap compatible html table
     #Output: HTML table converted DataFrame
     def df_to_html(self, df):
@@ -102,6 +115,22 @@ class Data():
             state_monthly_total_df = self.get_monthly_totals(state_df)
             state_monthly_total_df = self.add_month_name_column(state_monthly_total_df)
             state_monthly_total_df = state_monthly_total_df[['cases', 'month_name']]
+            monthly_province_state_dfs.append(state_monthly_total_df)
+            states.append(province_state)
+        return [states, monthly_province_state_dfs]
+
+
+    #Desc: Maps get_monthly_totals to each state
+    #Output: List of [[States], [Dataframes]]
+    def get_daily_totals_by_state(self):
+        all_province_states = self.get_states(self.us_infections)
+        monthly_province_state_dfs = []
+        states = []
+        for province_state in all_province_states:
+            state_df = self.get_by_state(self.us_infections, province_state)
+            state_monthly_total_df = self.get_daily_totals(state_df)
+            state_monthly_total_df = self.add_day_name_column(state_monthly_total_df)
+            state_monthly_total_df = state_monthly_total_df[['cases', 'day_name']]
             monthly_province_state_dfs.append(state_monthly_total_df)
             states.append(province_state)
         return [states, monthly_province_state_dfs]
