@@ -4212,7 +4212,7 @@ table.tablesorter thead tr .headerSortDown {
 }
 
 .footer {
-  padding: 24px 0 24px 250px;
+ padding: 0 0 0 0;
 }
 
 .footer.footer-default {

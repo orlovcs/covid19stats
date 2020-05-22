@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" href="../assets/img/favicon.png">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>
-    covid19stats main
+    covid19stats about
   </title>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
   <!--     Fonts and icons     -->
@@ -37,14 +37,14 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
           <ul class="navbar-nav">
-            <li class="nav-item active">
-              <a class="nav-link" href="/">Total<span class="sr-only">(current)</span></a>
+            <li class="nav-item ">
+              <a class="nav-link" href="/">Total</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/states.html">States</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/about.html">About</a>
+            <li class="nav-item active">
+              <a class="nav-link" href="/about.html">About<span class="sr-only">(current)</span></a>
             </li>
    
           </ul>
@@ -57,49 +57,21 @@
       <!-- End Navbar -->
       <div class="content">
 
-        <h2>U.S. Stats</h2>
-
-        <div class="row">
-          <div class="col-12">
-            <div class="card card-chart">
-              <script type="text/javascript">
-                var us_infections_monthly_list = {{ us_infections_monthly_list|safe }}
-                var us_infections_daily_list = {{ us_infections_daily_list|safe }}
-                
-            </script>
-              <div class="card-header ">
-                <div class="row">
-                  <div class="col-sm-6 text-left">
-                    <h5 class="card-category">Total Cases Reported</h5>
-                    <h2 class="card-title">United States</h2>
-                  </div>
-                  <div class="col-sm-6">
-                    <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
-                      <label class="btn btn-sm btn-primary btn-simple " id="0">
-                        <input type="radio" name="options" autocomplete="off" > Daily
-                      </label>
-
-                      <label class="btn btn-sm btn-primary btn-simple active" id="2">
-                        <input type="radio" name="options" autocomplete="off" checked> Monthly
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="chart-area">
-                  <canvas id="chartBig1"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-       
-     
+        <h2>About</h2>
+        <p>This app was developed to help better visualize the reported cases attributed to the COVID-19 pandemic.</p>
+        <br>
+        <h3>Data</h3>
+        <p>The app uses data from <a href="https://datahub.io/core/covid-19">this</a> repo from datahub.io.</p> 
+        <br>
+        <h3>Stack</h3>
+        <p>The data is processed and stored in a PostgreSQL database, which is then queried using psycopg2 as well as SQLAlchemy and displayed in a web app built with Flask, which was bootstrapped with <a href="https://themewagon.com/themes/open-source-bootstrap-admin-template/">this</a> theme.
+        
 
 
 
       </div>
+   
+   
       <footer class="footer">
         <div class="container-fluid">
           <nav>
