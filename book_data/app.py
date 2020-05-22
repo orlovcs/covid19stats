@@ -33,13 +33,18 @@ def run_query(query):
 @app.route("/")
 def hello():
  
-    us_infections_monthly = dt.get_monthly_totals(dt.get_us_infections())
+    print(dt.get_us_total_infections())
+    print(dt.get_monthly_totals(dt.get_us_total_infections()))
+
+
+    us_infections_monthly = dt.get_monthly_totals(dt.get_us_total_infections())
     us_infections_monthly = dt.add_month_name_column(us_infections_monthly)
     us_infections_monthly_html = dt.df_to_html(us_infections_monthly)
     months = us_infections_monthly['month_name'].tolist()
     cases = us_infections_monthly['cases'].tolist()
 
-    us_infections_daily = dt.get_daily_totals(dt.get_us_infections())
+
+    us_infections_daily = dt.get_daily_totals(dt.get_us_total_infections())
     us_infections_daily = dt.add_day_name_column(us_infections_daily)
     day = us_infections_daily['day_name'].tolist()
     dcases = us_infections_daily['cases'].tolist()

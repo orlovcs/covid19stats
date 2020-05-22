@@ -43,7 +43,6 @@ class Data():
     #Output: Dataframe
     def get_monthly_totals(self, df):
         df['day'] = pd.to_datetime(df['date']).dt.to_period('D')
-        df = df.groupby(['day','date'])['cases'].sum().reset_index()
         df = df.iloc[df.reset_index().groupby(pd.to_datetime(df['date']).dt.to_period('M'))['index'].idxmax()]
         return df
 
@@ -51,18 +50,21 @@ class Data():
     #Output: Dataframe
     def get_daily_totals(self, df):
         df['day'] = pd.to_datetime(df['date']).dt.to_period('D')
-        df = df.groupby(['day','date'])['cases'].sum().reset_index()
         return df
 
-    def get_states(self, df):
-        return df.province_state.unique()
+    def get_states(self):
+        states_df = self.run_query('SELECT * FROM \"states\";')
+        return states_df.province_state.unique()
+   
     #Desc: Filters df rows by state
+    #Updated Desc: Selects state table
     #Output: Dataframe
-    def get_by_state(self, df, state):
-        return df.loc[df['province_state'] == state]
+    def get_by_state(self, state):
+        states_df = self.run_query('SELECT * FROM \"'+state+'\";')
+        return states_df
 
-    def get_us_infections(self):
-        return self.us_infections
+    def get_us_total_infections(self):
+        return self.run_query('SELECT * FROM \"us total\";')
 
     def add_month_name_column(self, df):
         df['day'] = pd.to_datetime(df['date']).dt.to_period('D')
@@ -82,11 +84,11 @@ class Data():
     #Desc: Maps get_monthly_totals to each state
     #Output: List of [[States], [Dataframes]]
     def get_monthly_totals_by_state(self):
-        all_province_states = self.get_states(self.us_infections)
+        all_province_states = self.get_states()
         monthly_province_state_dfs = []
         states = []
         for province_state in all_province_states:
-            state_df = self.get_by_state(self.us_infections, province_state)
+            state_df = self.get_by_state(province_state)
             state_monthly_total_df = self.get_monthly_totals(state_df)
             state_monthly_total_df = self.add_month_name_column(state_monthly_total_df)
             state_monthly_total_df = state_monthly_total_df[['cases', 'month_name']]
@@ -98,11 +100,11 @@ class Data():
     #Desc: Maps get_monthly_totals to each state
     #Output: List of [[States], [Dataframes]]
     def get_daily_totals_by_state(self):
-        all_province_states = self.get_states(self.us_infections)
+        all_province_states = self.get_states()
         monthly_province_state_dfs = []
         states = []
         for province_state in all_province_states:
-            state_df = self.get_by_state(self.us_infections, province_state)
+            state_df = self.get_by_state(province_state)
             state_monthly_total_df = self.get_daily_totals(state_df)
             state_monthly_total_df = self.add_day_name_column(state_monthly_total_df)
             state_monthly_total_df = state_monthly_total_df[['cases', 'day_name']]

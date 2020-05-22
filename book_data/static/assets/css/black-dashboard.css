@@ -337,6 +337,9 @@ Copyright (c) 2015 Daniel Eden
     overflow: auto !important;
   }
 }
+.navbar-nav {
+  background-color: linear-gradient(#404081, #1e1e24);
+}
 
 .btn,
 .navbar .navbar-nav>a.btn {
