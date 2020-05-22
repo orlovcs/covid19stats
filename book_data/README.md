@@ -11,3 +11,13 @@ progress:
 
 ![0](progress/0.png)
 ![1](progress/1.png)
+
+
+
+
+heroku pg:psql --app YOUR_APP_NAME_HERE < updates.sql
+pg_dump dbname > outfile
+
+
+
+The site works well however since the current data has over 370k lines, all of which are imported into the database, this breaks the 10k row data cap. Creating precomputed aggregated tables for each state and the US as a whole while limit the rows to only around 6.7k. This will leave a couple months worth more rows which could be added to the database instance. This will require a rewrite of some of the code.

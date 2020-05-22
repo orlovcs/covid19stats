@@ -4,7 +4,9 @@ from flask_sqlalchemy import SQLAlchemy
 import pandas as pd
 import numpy as np
 from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
 import time, datetime
+
 
 
 app = Flask(__name__)
@@ -12,10 +14,16 @@ app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-
 engine = create_engine(os.environ['DATABASE_URL'])
 
+Base = declarative_base()
+
+Base.metadata.reflect(engine)
+
 from models import Data, Infections
+
+
+
 
 dt = Data()
 
@@ -24,7 +32,7 @@ def run_query(query):
 
 @app.route("/")
 def hello():
-
+ 
     us_infections_monthly = dt.get_monthly_totals(dt.get_us_infections())
     us_infections_monthly = dt.add_month_name_column(us_infections_monthly)
     us_infections_monthly_html = dt.df_to_html(us_infections_monthly)
@@ -37,7 +45,6 @@ def hello():
     dcases = us_infections_daily['cases'].tolist()
 
     return render_template('dashboard/dashboard.html', us_infections_monthly_html=us_infections_monthly_html, us_infections_monthly_list=[months,cases], us_infections_daily_list=[day, dcases]  )
-
 @app.route("/states.html")
 def get_states():
     try:

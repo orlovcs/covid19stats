@@ -25,3 +25,5 @@ def csvloader(engine, file, table):
       df.to_sql(table, engine, if_exists='fail')
    except ValueError:
         print('Table '+table+' already exists, doing nothing')
+      
+         #after main table is added, create the additional aggregated table
