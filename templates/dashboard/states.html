@@ -60,6 +60,8 @@
         
 
         <h2>States Stats</h2>
+        <input type="search" placeholder="Search States..." name="search" class="form-control searchbox-input" required="">
+        <br>
 
 
     <div class="row">
@@ -72,9 +74,9 @@
 
     {%for i in range(0, all_province_states_len)%} 
       
-      <div class="col-lg-4">
-        <div class="card ">
-          <div class="card-header ">
+      <div class="col-lg-4 " data-string="{{all_province_states[i]}}">
+        <div class="card">
+        <div class="card-header ">
             <div class="row">
               <div class="col-sm text-left">
                 <h5 class="card-category">Cases</h5>
@@ -95,13 +97,15 @@
           <div class="card-body">
             <canvas id="{{all_province_states[i]}}"></canvas>
           </div>
-        </div>
+          </div>
       </div>
 
     {%endfor%} 
 
   </div>
 
+
+  
 
       </div>
       <footer class="footer">
@@ -181,6 +185,20 @@
       $(document).ready(function() {
         $().ready(function() {
 
+        // STATE SEARCH FEATURE
+        $('.searchbox-input').on('keyup',function () {
+        //$('.card').show();
+        var input = $(this).val().toUpperCase(); // get the value of the input, which we filter on
+
+        $(".col-lg-4").each(function() {
+        if ($(this).data("string").toUpperCase().indexOf(input) < 0) {
+        $(this).hide();
+        } else {
+        $(this).show();
+        }
+        })
+
+      });
 
 
 
