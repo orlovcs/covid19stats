@@ -170,7 +170,16 @@ demo = {
         xPadding: 12,
         mode: "nearest",
         intersect: 0,
-        position: "nearest"
+        position: "nearest",
+			  callbacks: {
+					label: function(tooltipItem, data) {
+						var value = data.datasets[0].data[tooltipItem.index];
+						value = value.toString();
+						value = value.split(/(?=(?:...)*$)/);
+						value = value.join(',');
+						return value;
+					}
+			  } // end callbacks:
       },
       responsive: true,
       scales: {
@@ -185,7 +194,14 @@ demo = {
             suggestedMin: 60,
             suggestedMax: 125,
             padding: 20,
-            fontColor: "#9a9a9a"
+            fontColor: "#9a9a9a",
+            beginAtZero:true,
+            userCallback: function(value, index, values) {
+                value = value.toString();
+                value = value.split(/(?=(?:...)*$)/);
+                value = value.join(',');
+                return value;
+            }
           }
         }],
 

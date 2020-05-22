@@ -170,7 +170,16 @@ demo = {
         xPadding: 12,
         mode: "nearest",
         intersect: 0,
-        position: "nearest"
+        position: "nearest",
+			  callbacks: {
+					label: function(tooltipItem, data) {
+						var value = data.datasets[0].data[tooltipItem.index];
+						value = value.toString();
+						value = value.split(/(?=(?:...)*$)/);
+						value = value.join(',');
+						return value;
+					}
+			  } // end callbacks:
       },
       responsive: true,
       scales: {
@@ -182,11 +191,14 @@ demo = {
             zeroLineColor: "transparent",
           },
           ticks: {
-            suggestedMin: 60,
-            suggestedMax: 125,
-            padding: 20,
-            fontColor: "#9a9a9a"
-          }
+            beginAtZero:true,
+            userCallback: function(value, index, values) {
+                value = value.toString();
+                value = value.split(/(?=(?:...)*$)/);
+                value = value.join(',');
+                return value;
+            }
+        }
         }],
 
         xAxes: [{
@@ -356,6 +368,7 @@ demo = {
     var ctx = document.getElementById("chartBig1").getContext('2d');
 
     var gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
+
 
     gradientStroke.addColorStop(1, 'rgba(72,72,176,0.1)');
     gradientStroke.addColorStop(0.4, 'rgba(72,72,176,0.0)');

@@ -32,10 +32,6 @@ def run_query(query):
 
 @app.route("/")
 def hello():
- 
-    print(dt.get_us_total_infections())
-    print(dt.get_monthly_totals(dt.get_us_total_infections()))
-
 
     us_infections_monthly = dt.get_monthly_totals(dt.get_us_total_infections())
     us_infections_monthly = dt.add_month_name_column(us_infections_monthly)
