@@ -59,7 +59,6 @@ def get_states():
 
         monthly_province_state_dfs = states_infections_monthly[1]
         dats = []
-        print(scraped_states_dict)
         #do this in models.py
         for dat, state in zip(monthly_province_state_dfs, all_province_states):
             months = dat[['month_name']]

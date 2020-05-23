@@ -46,7 +46,7 @@ class Data():
         options.add_argument('--disable-extensions')
         options.add_argument('start-maximized')
         options.add_argument('disable-infobars')
-        driver = webdriver.Chrome(executable_path='/usr/bin/chromedriver')
+        driver = webdriver.Chrome(executable_path=os.environ['CHROMEDRIVER_PATH'])
         #Scrap info cards will only be displayed if elements are found
         try:
             driver.get("https://www.worldometers.info/coronavirus/country/us/")
