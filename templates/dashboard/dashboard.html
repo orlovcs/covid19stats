@@ -97,8 +97,114 @@
           </div>
         </div>
        
-     
 
+
+        <!-- Display cards with scrapped data if it exists-->
+        {% if scrapped_usa_total %}
+        <div class="row">
+          <div class="col-lg-4 ">
+            <div class="card">
+            <div class="card-header ">
+                <div class="row">
+                  <div class="col-sm text-left">
+                    <h5 class="card-category">U.S.A</h5>
+                    <h2 class="card-title">Total Cases</h2>
+                  </div>
+                </div>
+            </div>
+               <div class="card-body">
+                 <h1>{{scrapped_usa_total[1]|safe}}<h1>
+               </div>
+            </div>
+          </div>
+  
+          <div class="col-lg-4 ">
+            <div class="card">
+            <div class="card-header ">
+                <div class="row">
+                  <div class="col-sm text-left">
+                    <h5 class="card-category">U.S.A</h5>
+                    <h2 class="card-title">Total Deaths</h2>
+                  </div>
+                  
+                </div>
+            </div>
+               <div class="card-body">
+                <h1>{{scrapped_usa_total[3]|safe}}<h1>
+               </div>
+            </div>
+          </div>
+  
+          <div class="col-lg-4 ">
+            <div class="card">
+            <div class="card-header ">
+                <div class="row">
+                  <div class="col-sm text-left">
+                    <h5 class="card-category">U.S.A</h5>
+                    <h2 class="card-title">Total Active Cases</h2>
+                  </div>
+                </div>
+            </div>
+               <div class="card-body">
+                <h1>{{scrapped_usa_total[5]|safe}}<h1>
+               </div>
+            </div>
+          </div>
+    
+          </div>
+  
+          <div class="row">
+  
+            <div class="col-lg-4 ">
+              <div class="card">
+              <div class="card-header ">
+                  <div class="row">
+                    <div class="col-sm text-left">
+                      <h5 class="card-category">U.S.A</h5>
+                      <h2 class="card-title">Total Cases/1M Pop</h2>
+                    </div>
+                  </div>
+              </div>
+                 <div class="card-body">
+                   <h1>{{scrapped_usa_total[6]|safe}}<h1>
+                 </div>
+              </div>
+            </div>
+    
+            <div class="col-lg-4 ">
+              <div class="card">
+              <div class="card-header ">
+                  <div class="row">
+                    <div class="col-sm text-left">
+                      <h5 class="card-category">U.S.A</h5>
+                      <h2 class="card-title">Total Deaths/1M Pop</h2>
+                    </div>
+                  </div>
+              </div>
+                 <div class="card-body">
+                  <h1>{{scrapped_usa_total[7]|safe}}<h1>
+                 </div>
+              </div>
+            </div>
+    
+            <div class="col-lg-4 ">
+              <div class="card">
+              <div class="card-header ">
+                  <div class="row">
+                    <div class="col-sm text-left">
+                      <h5 class="card-category">U.S.A</h5>
+                      <h2 class="card-title">Total Tests/1M Pop</h2>
+                    </div>
+                  </div>
+              </div>
+                 <div class="card-body">
+                  <h1>{{scrapped_usa_total[9]|safe}}<h1>
+                 </div>
+              </div>
+            </div>
+      
+            </div>
+        {% endif %}
 
 
       </div>
