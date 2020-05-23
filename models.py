@@ -41,6 +41,8 @@ class Data():
        return pd.read_sql(query, con=self.engine)
 
     def init_selenium_driver(self):
+
+        #Able to work on the heroku dyno and local system server
         chrome_bin = os.environ.get('GOOGLE_CHROME_SHIM', None)
         options = ChromeOptions()
         options.binary_location = chrome_bin
