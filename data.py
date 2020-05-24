@@ -1,27 +1,15 @@
 import psycopg2 as pg
 import pandas as pd
 import io
+import os
 from sqlalchemy import create_engine
 import numpy as np
 import datetime
 import time
 import requests
 
-#connect to the database
-connection = pg.connect("dbname=covid user=postgres password=root")
-#open a cursor for interaction
-cursor = connection.cursor()
 
-engine = create_engine('postgresql://postgres:root@localhost/covid')
-
-
-
-def run_command(command):
-   cursor.execute(command)
-   print(cursor.statusmessage)
-
-def print_query(query):
-   print(pd.read_sql(query, con=engine))
+engine = create_engine(os.environ['DATABASE_URL'])
 
 def run_query(query):
    return pd.read_sql(query, con=engine)
