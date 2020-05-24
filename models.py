@@ -46,11 +46,9 @@ class Data():
         chrome_bin = os.environ.get('GOOGLE_CHROME_SHIM', None)
         options = ChromeOptions()
         options.binary_location = chrome_bin
-        options.add_argument('--incognito')
         options.add_argument('--headless')
-        options.add_argument('--disable-extensions')
-        options.add_argument('start-maximized')
-        options.add_argument('disable-infobars')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
         driver = webdriver.Chrome(executable_path='chromedriver', chrome_options=options)
 
         #Scrap info cards will only be displayed if elements are found
