@@ -35,7 +35,6 @@ def run_query(query):
 @app.route("/")
 def hello():
 
-    scrapped_usa_total = dt.get_scraped_usa_total()
 
 
     us_infections_monthly = dt.get_monthly_totals(dt.get_us_total_infections())
@@ -51,7 +50,7 @@ def hello():
     dcases = us_infections_daily['cases'].tolist()
 
     
-    return render_template('dashboard/dashboard.html', scrapped_usa_total=scrapped_usa_total, us_infections_monthly_list=[months,cases], us_infections_daily_list=[day, dcases]  )
+    return render_template('dashboard/dashboard.html', us_infections_monthly_list=[months,cases], us_infections_daily_list=[day, dcases]  )
 @app.route("/states.html")
 def get_states():
     try:
@@ -120,6 +119,15 @@ def get_states():
 def get_about():
     try:
         return render_template('dashboard/about.html')
+    except Exception as e:
+	    return(str(e))
+
+
+@app.route("/dash")
+def get_dash():
+    try:
+        scrapped_usa_total = dt.get_scraped_usa_total()
+        return render_template('dashboard/dashajax.html', scrapped_usa_total=scrapped_usa_total )
     except Exception as e:
 	    return(str(e))
 
