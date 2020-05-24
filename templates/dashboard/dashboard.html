@@ -191,7 +191,6 @@
 
       $(document).ready(function() {
 
-        $('#result').load('/dash')
 
         $().ready(function() {
           $sidebar = $('.sidebar');
@@ -299,8 +298,11 @@
           $('.dark-badge').click(function() {
             $('body').removeClass('white-content');
           });
+         
         });
+       
       });
+      $('#result').load('/dash') 
     </script>
     <script>
       $(document).ready(function() {

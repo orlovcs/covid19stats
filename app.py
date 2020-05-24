@@ -54,7 +54,6 @@ def hello():
 @app.route("/states.html")
 def get_states():
     try:
-
         scraped_states_dict = dt.get_scraped_states_dict()
 
         states_infections_monthly = dt.get_monthly_totals_by_state()
