@@ -2,13 +2,9 @@ import psycopg2 as pg
 import pandas as pd
 import io
 from sqlalchemy import create_engine
-import matplotlib.pyplot as plt
-from matplotlib.dates import DateFormatter
-import matplotlib.dates as mdates
 import numpy as np
 import datetime
 import time
-from sqlalchemy.types import TEXT
 import requests
 
 #connect to the database
