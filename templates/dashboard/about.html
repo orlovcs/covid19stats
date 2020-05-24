@@ -20,7 +20,18 @@
   <link href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" rel="stylesheet">
   <link href="{{ url_for('static', filename='assets/css/black-dashboard.css') }}" rel="stylesheet">
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116546024-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'UA-116546024-3');
+</script>
+
+
+  
 </head>
 
 <body class=" ">
@@ -64,6 +75,7 @@
         <br>
         <h3>Data</h3>
         <p>The app uses data from <a href="https://datahub.io/core/covid-19">this</a> datahub.io repo and <a href="https://www.worldometers.info/coronavirus/country/us/">this</a> table.</p> 
+        <p>Numbers may vary slightly since data is sourced from multiple sources.</p>
         <br>
         <h3>Stack</h3>
         <p>The data is processed and stored in a <a href="https://www.postgresql.org/">PostgreSQL</a> database, which is then queried using <a href="https://pypi.org/project/psycopg2/">psycopg2</a> and displayed in a web app built with <a href="https://flask.palletsprojects.com">Flask</a>  with <a href="https://gunicorn.org/">gunicorn</a> , which was bootstrapped with <a href="https://themewagon.com/themes/open-source-bootstrap-admin-template/">this</a> theme.   
