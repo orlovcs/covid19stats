@@ -27,11 +27,16 @@ from models import Data, Infections
 
 dt = Data()
 
+
+
 def run_query(query):
    return pd.read_sql(query, con=engine)
 
 @app.route("/")
 def hello():
+
+    scrapped_usa_total = dt.get_scraped_usa_total()
+
 
     us_infections_monthly = dt.get_monthly_totals(dt.get_us_total_infections())
     us_infections_monthly = dt.add_month_name_column(us_infections_monthly)
@@ -46,16 +51,16 @@ def hello():
     dcases = us_infections_daily['cases'].tolist()
 
     
-    scrapped_usa_total = dt.get_scraped_usa_total()
-
     return render_template('dashboard/dashboard.html', scrapped_usa_total=scrapped_usa_total, us_infections_monthly_list=[months,cases], us_infections_daily_list=[day, dcases]  )
 @app.route("/states.html")
 def get_states():
     try:
+
+        scraped_states_dict = dt.get_scraped_states_dict()
+
         states_infections_monthly = dt.get_monthly_totals_by_state()
         all_province_states = states_infections_monthly[0]
         all_province_states_stripped = [x.strip(' ') for x in all_province_states]
-        scraped_states_dict = dt.get_scraped_states_dict()
 
         monthly_province_state_dfs = states_infections_monthly[1]
         dats = []
@@ -66,22 +71,24 @@ def get_states():
             months = months.values.tolist() 
             counts = counts.values.tolist() 
             info = []
-            #No info on American Samoa
-            if state == 'American Samoa':
-                info = ['N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']
-            #Reformat D.C
-            elif state == 'District of Columbia':
-                info = scraped_states_dict['District Of Columbia']
-            #Reformat A.V.I.
-            elif state == 'Virgin Islands':
-                info = scraped_states_dict['United States Virgin Islands']
-            #Cruise Ships need to be formatted
-            elif state == 'Diamond Princess':
-                info = scraped_states_dict['Diamond Princess Ship']
-            elif state == 'Grand Princess':
-                info = scraped_states_dict['Grand Princess Ship']            
-            elif state in scraped_states_dict:
-                info = scraped_states_dict[state]
+            #make sure all scraped tables are available
+            if len(scraped_states_dict) > 52:
+                #No info on American Samoa
+                if state == 'American Samoa':
+                    info = ['N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']
+                #Reformat D.C
+                elif state == 'District of Columbia':
+                    info = scraped_states_dict['District Of Columbia']
+                #Reformat A.V.I.
+                elif state == 'Virgin Islands':
+                    info = scraped_states_dict['United States Virgin Islands']
+                #Cruise Ships need to be formatted
+                elif state == 'Diamond Princess':
+                    info = scraped_states_dict['Diamond Princess Ship']
+                elif state == 'Grand Princess':
+                    info = scraped_states_dict['Grand Princess Ship']            
+                elif state in scraped_states_dict:
+                    info = scraped_states_dict[state]
             dat = [months, counts, info]
             dats.append(dat)
 

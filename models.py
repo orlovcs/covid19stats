@@ -53,8 +53,6 @@ class Data():
         options.add_argument('disable-infobars')
         driver = webdriver.Chrome(executable_path='chromedriver', chrome_options=options)
 
-
-
         #Scrap info cards will only be displayed if elements are found
         try:
             driver.get("https://www.worldometers.info/coronavirus/country/us/")
