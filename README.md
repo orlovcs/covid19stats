@@ -18,6 +18,8 @@ covid19stats is an app designed to help visualize the spread of COVID-19 in Amer
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
 * [Usage](#usage)
+* [Development](#Development)
+* [Heroku](#Heroku)
 * [Todo](#Todo)
 * [License](#License)
 * [Acknowledgements](#Acknowledgements)
@@ -103,6 +105,9 @@ kill -9 pid
 python manage.py runserver
 
 ```
+## Development
+
+See [progress](https://github.com/orlovcs/Scrappy/tree/master/progress).
 
 ## Heroku
 
