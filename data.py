@@ -8,7 +8,7 @@ import datetime
 import time
 import requests
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, WebDriverException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 
 
@@ -82,38 +82,49 @@ options.binary_location = chrome_bin
 options.add_argument('--headless')
 options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')
-driver = webdriver.Chrome(executable_path='chromedriver', chrome_options=options)
 
+#Let the driver attempt to start for only a certain amount of times if it is unstable before giving up
+maxcounter=5
+for counter in range(maxcounter):
+   try:           
+      driver = webdriver.Chrome(executable_path='chromedriver', chrome_options=options)
+      break
+   except WebDriverException as e:
+      print("RETRYING INITIALIZATION OF WEBDRIVER! Error: %s" % str(e))
+      time.sleep(10)
+      if counter==maxcounter-1:
+         driver = None
 
-#Scrap info cards will only be displayed if elements are found
-try:
-   driver.get("https://www.worldometers.info/coronavirus/country/us/")
-   tbody = driver.find_element_by_tag_name("tbody")
-   #Grab just the first total row
-   for row in tbody.find_elements_by_tag_name("tr"):
-         cells = row.find_elements_by_tag_name("td")
-         for cell in cells:
-            scraped_usa_total.append(cell.text)
-         break
-   #Grab every row for all states
-   for row in tbody.find_elements_by_tag_name("tr"):
-         cells = row.find_elements_by_tag_name("td")
-         state_row = []
-         for cell in cells:
-            state_row.append(cell.text)
-            scraped_states_dict[state_row[0]] = state_row
-   #Grab provinces
-   tbody = driver.find_element_by_xpath("//*[@id='usa_table_countries_today']/tbody[2]")
-   for row in tbody.find_elements_by_tag_name("tr"):
-         cells = row.find_elements_by_tag_name("td")
-         state_row = []
-         for cell in cells:
-            state_row.append(cell.text)
-            scraped_states_dict[state_row[0]] = state_row
-   driver.close()
+if driver:
+   #Scrap info cards will only be displayed if elements are found
+   try:
+      driver.get("https://www.worldometers.info/coronavirus/country/us/")
+      tbody = driver.find_element_by_tag_name("tbody")
+      #Grab just the first total row
+      for row in tbody.find_elements_by_tag_name("tr"):
+            cells = row.find_elements_by_tag_name("td")
+            for cell in cells:
+               scraped_usa_total.append(cell.text)
+            break
+      #Grab every row for all states
+      for row in tbody.find_elements_by_tag_name("tr"):
+            cells = row.find_elements_by_tag_name("td")
+            state_row = []
+            for cell in cells:
+               state_row.append(cell.text)
+               scraped_states_dict[state_row[0]] = state_row
+      #Grab provinces
+      tbody = driver.find_element_by_xpath("//*[@id='usa_table_countries_today']/tbody[2]")
+      for row in tbody.find_elements_by_tag_name("tr"):
+            cells = row.find_elements_by_tag_name("td")
+            state_row = []
+            for cell in cells:
+               state_row.append(cell.text)
+               scraped_states_dict[state_row[0]] = state_row
+      driver.close()
 
-except NoSuchElementException:
-   scraped_usa_total = None
+   except NoSuchElementException:
+      scraped_usa_total = None
 
 
 if scraped_usa_total:
