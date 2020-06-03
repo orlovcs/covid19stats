@@ -117,6 +117,10 @@ except NoSuchElementException:
 
 
 if scraped_usa_total:
+   #Change white spaces to 0
+   scraped_usa_total = [x.replace('', '0') if x == '' else x for x in scraped_usa_total]
+   scraped_usa_total = [x.replace(' ', '0') if x == '' else x for x in scraped_usa_total]
+
    #Make a table for us total scrap dash with this list
    df = pd.DataFrame(scraped_usa_total,columns=['values'])
    table = 'us total scrap'
@@ -145,12 +149,21 @@ if scraped_states_dict and len(scraped_states_dict) > 52:
    scraped_states_dict['Grand Princess'] = scraped_states_dict['Grand Princess Ship']
    del(scraped_states_dict['Grand Princess Ship'])
 
+   
+
    #Will there be a state ending with scrap?
    #Add a signifier to the end of every state
    scraped_states_dict =  {k+" scrap": v for k, v in scraped_states_dict.items()}
 
    #Create a table for every state scrapped data
    for province_state in province_states:
+      #Trim off un-needed stats, keep indicies 1,3,6,7
+      state_scrap_info = scraped_states_dict[province_state + " scrap"]
+      scraped_states_dict[province_state + " scrap"] = [state_scrap_info[1],state_scrap_info[3],state_scrap_info[6],state_scrap_info[7]]
+
+      #Replace all white space with N/A
+      scraped_states_dict[province_state + " scrap"] = [x.replace('', 'N/A') if x == '' else x for x in scraped_states_dict[province_state + " scrap"]]
+      
       df = pd.DataFrame(scraped_states_dict[province_state + " scrap"],columns=['values'])
       table = province_state + " scrap"
       try:
