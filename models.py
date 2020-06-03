@@ -3,10 +3,6 @@ import pandas as pd
 from sqlalchemy import create_engine
 import os
 import time, datetime
-from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.chrome.options import Options as ChromeOptions
-
 
 
 class Infections(db.Model):
@@ -34,61 +30,28 @@ class Infections(db.Model):
 class Data():
     us_deaths = None
     engine = None
-    scraped_usa_total = []
+    driver = None
     scraped_states_dict = {}
 
     def run_query(self, query):
        return pd.read_sql(query, con=self.engine)
 
-    def init_selenium_driver(self):
 
-        #Able to work on the heroku dyno and local system server
-        chrome_bin = os.environ.get('GOOGLE_CHROME_SHIM', None)
-        options = ChromeOptions()
-        options.binary_location = chrome_bin
-        options.add_argument('--headless')
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-        driver = webdriver.Chrome(executable_path='chromedriver', chrome_options=options)
-
-        #Scrap info cards will only be displayed if elements are found
-        try:
-            driver.get("https://www.worldometers.info/coronavirus/country/us/")
-            tbody = driver.find_element_by_tag_name("tbody")
-            #Grab just the first total row
-            for row in tbody.find_elements_by_tag_name("tr"):
-                cells = row.find_elements_by_tag_name("td")
-                for cell in cells:
-                    self.scraped_usa_total.append(cell.text)
-                break
-            #Grab every row for all states
-            for row in tbody.find_elements_by_tag_name("tr"):
-                cells = row.find_elements_by_tag_name("td")
-                state_row = []
-                for cell in cells:
-                    state_row.append(cell.text)
-                self.scraped_states_dict[state_row[0]] = state_row
-            #Grab provinces
-            tbody = driver.find_element_by_xpath("//*[@id='usa_table_countries_today']/tbody[2]")
-            for row in tbody.find_elements_by_tag_name("tr"):
-                cells = row.find_elements_by_tag_name("td")
-                state_row = []
-                for cell in cells:
-                    state_row.append(cell.text)
-                self.scraped_states_dict[state_row[0]] = state_row
-            driver.close()
-
-        except NoSuchElementException:
-            self.scraped_usa_total = None
     def __init__(self):
         self.engine = create_engine(os.environ['DATABASE_URL'])
-        self.init_selenium_driver()
 
+    #Load in data from scrapped dashboard table
     def get_scraped_usa_total(self):
-        return self.scraped_usa_total
+        scrap_total_df = self.run_query('SELECT * FROM \"us total scrap\";')
+        scrap_total_df_list = scrap_total_df['values'].values.tolist()
+        return scrap_total_df_list
 
-    def get_scraped_states_dict(self):
-        return self.scraped_states_dict
+    #Load in data from scrapped state table
+    def get_scraped_state(self, state):
+        scrap_total_df = self.run_query('SELECT * FROM \"'+state+' scrap\";')
+        scrap_total_df_list = scrap_total_df['values'].values.tolist()
+        return scrap_total_df_list
+
 
     #Desc: Groups cases by day then selects rows for last day of each month
     #Output: Dataframe

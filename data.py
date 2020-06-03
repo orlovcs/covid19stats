@@ -7,39 +7,16 @@ import numpy as np
 import datetime
 import time
 import requests
+from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+
 
 
 engine = create_engine(os.environ['DATABASE_URL'])
 
 def run_query(query):
    return pd.read_sql(query, con=engine)
-
-
-
-def csvloader(engine, file, table):
-  
-   #copy data from csv file
-   my_file = open(file)
-   df = pd.read_csv(my_file)
-   #lowercase column names
-   df.columns = map(str.lower, df.columns)
-   #remove all whitespaces, replace them with underscores
-   df = df.rename(columns=lambda x: x.replace(' ', '_'))
-   df = df.rename(columns=lambda x: x.strip())
-   
-   df = df.rename(columns={'country/region': 'country_region', 'province/state': 'province_state', 'case':'cases'})
-
-   df = df[['combined_key', 'date', 'country_region', 'cases', 'province_state']]
-
-   print(df.head(n=10))
-
-   #if table does not exist, add it to the dbs
-     #if table does not exist, add it to the dbs
-   try:
-      df.to_sql(table, engine, if_exists='fail')
-   except ValueError:
-        print('Table '+table+' already exists, doing nothing')
-      
 
 #downloaded updated dataset
 response = requests.get('http://datahub.io/core/covid-19/r/us_confirmed.csv')
@@ -52,10 +29,6 @@ us_confirmed_df = us_confirmed_df.rename(columns=lambda x: x.replace(' ', '_'))
 us_confirmed_df = us_confirmed_df.rename(columns=lambda x: x.strip())
 us_confirmed_df = us_confirmed_df.rename(columns={'country/region': 'country_region', 'province/state': 'province_state', 'case':'cases'})
 us_confirmed_df = us_confirmed_df[['combined_key', 'date', 'country_region', 'cases', 'province_state']]
-
-
-#initiate loading csv
-#csvloader(engine, '../datasets/us_confirmed.csv', 'us_infections')
 
 province_states = us_confirmed_df.province_state.drop_duplicates()
 
@@ -90,4 +63,98 @@ for province_state in province_states:
    except ValueError:
          print('Table '+table+' already exists, doing nothing') 
 
-print("Tables Updated")
+print("CSV Tables Updated")
+
+
+
+
+
+print("Initializing Selenium Driver")
+
+driver = None
+scraped_usa_total = []
+scraped_states_dict = {}
+#init the chrome driver
+#Able to work on the heroku dyno and local system server
+chrome_bin = os.environ.get('GOOGLE_CHROME_SHIM', None)
+options = ChromeOptions()
+options.binary_location = chrome_bin
+options.add_argument('--headless')
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
+driver = webdriver.Chrome(executable_path='chromedriver', chrome_options=options)
+
+
+#Scrap info cards will only be displayed if elements are found
+try:
+   driver.get("https://www.worldometers.info/coronavirus/country/us/")
+   tbody = driver.find_element_by_tag_name("tbody")
+   #Grab just the first total row
+   for row in tbody.find_elements_by_tag_name("tr"):
+         cells = row.find_elements_by_tag_name("td")
+         for cell in cells:
+            scraped_usa_total.append(cell.text)
+         break
+   #Grab every row for all states
+   for row in tbody.find_elements_by_tag_name("tr"):
+         cells = row.find_elements_by_tag_name("td")
+         state_row = []
+         for cell in cells:
+            state_row.append(cell.text)
+            scraped_states_dict[state_row[0]] = state_row
+   #Grab provinces
+   tbody = driver.find_element_by_xpath("//*[@id='usa_table_countries_today']/tbody[2]")
+   for row in tbody.find_elements_by_tag_name("tr"):
+         cells = row.find_elements_by_tag_name("td")
+         state_row = []
+         for cell in cells:
+            state_row.append(cell.text)
+            scraped_states_dict[state_row[0]] = state_row
+   driver.close()
+
+except NoSuchElementException:
+   scraped_usa_total = None
+
+
+if scraped_usa_total:
+   #Make a table for us total scrap dash with this list
+   df = pd.DataFrame(scraped_usa_total,columns=['values'])
+   table = 'us total scrap'
+   try:
+      df.to_sql(table, engine, if_exists='replace')
+   except ValueError:
+         print('Table '+table+' already exists, doing nothing')
+
+   print("Table us total scrap updated")
+
+#make sure all scraped tables are available
+if scraped_states_dict and len(scraped_states_dict) > 52:
+   #Reformat table names from scrapped data
+   #No info on American Samoa
+   scraped_states_dict['American Samoa'] = ['N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']
+   #Reformat D.C
+   scraped_states_dict['District of Columbia'] = scraped_states_dict['District Of Columbia']
+   del(scraped_states_dict['District Of Columbia'])
+   #Reformat A.V.I.
+   scraped_states_dict['Virgin Islands'] = scraped_states_dict['United States Virgin Islands']
+   del(scraped_states_dict['United States Virgin Islands'])
+   #Cruise Ships need to be formatted
+   scraped_states_dict['Diamond Princess'] = scraped_states_dict['Diamond Princess Ship']
+   del(scraped_states_dict['Diamond Princess Ship'])
+
+   scraped_states_dict['Grand Princess'] = scraped_states_dict['Grand Princess Ship']
+   del(scraped_states_dict['Grand Princess Ship'])
+
+   #Will there be a state ending with scrap?
+   #Add a signifier to the end of every state
+   scraped_states_dict =  {k+" scrap": v for k, v in scraped_states_dict.items()}
+
+   #Create a table for every state scrapped data
+   for province_state in province_states:
+      df = pd.DataFrame(scraped_states_dict[province_state + " scrap"],columns=['values'])
+      table = province_state + " scrap"
+      try:
+         df.to_sql(table, engine, if_exists='replace')
+      except ValueError:
+            print('Table '+table+' already exists, doing nothing') 
+   print("State scrap tables updated")
