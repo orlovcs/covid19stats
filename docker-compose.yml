@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+   app:
+     build: .
+     command: python manage.py run -h 0.0.0.0
+     volumes:
+       - .:/usr/src/app/
+     ports:
+       - 5000:5000
