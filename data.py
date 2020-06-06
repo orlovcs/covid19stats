@@ -10,8 +10,7 @@ import requests
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, WebDriverException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-
-
+import sys
 
 engine = create_engine(os.environ['DATABASE_URL'])
 
@@ -67,6 +66,15 @@ print("CSV Tables Updated")
 
 
 
+#Check if Selenium Chromedriver should be initialized with the docker method
+docker_config = False
+args_amt = len(sys.argv)
+if args_amt == 2:
+   if sys.argv[1] == 'docker' or sys.argv[1] == '-docker':
+      print("Docker Chromedriver method selected")
+      docker_config = True
+
+
 
 
 print("Initializing Selenium Driver")
@@ -77,8 +85,11 @@ scraped_states_dict = {}
 #init the chrome driver
 #Able to work on the heroku dyno and local system server
 options = ChromeOptions()
-#chrome_bin = os.environ.get('GOOGLE_CHROME_SHIM', None)
-#options.binary_location = chrome_bin
+
+#Check if Docker method selected for this env var
+if docker_config == False:
+   chrome_bin = os.environ.get('GOOGLE_CHROME_SHIM', None)
+   options.binary_location = chrome_bin
 options.add_argument('--headless')
 options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')
@@ -86,8 +97,11 @@ options.add_argument('--disable-dev-shm-usage')
 #Let the driver attempt to start for only a certain amount of times if it is unstable before giving up
 maxcounter=5
 for counter in range(maxcounter):
-   try:           
-      driver = webdriver.Chrome(chrome_options=options)
+   try:
+      if docker_config:        
+         driver = webdriver.Chrome(chrome_options=options)
+      else:
+         driver = webdriver.Chrome(executable_path='chromedriver', chrome_options=options)
       break
    except WebDriverException as e:
       print("RETRYING THE INITIALIZATION OF WEBDRIVER! Error: %s" % str(e))
