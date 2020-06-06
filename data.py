@@ -76,9 +76,9 @@ scraped_usa_total = []
 scraped_states_dict = {}
 #init the chrome driver
 #Able to work on the heroku dyno and local system server
-chrome_bin = os.environ.get('GOOGLE_CHROME_SHIM', None)
 options = ChromeOptions()
-options.binary_location = chrome_bin
+#chrome_bin = os.environ.get('GOOGLE_CHROME_SHIM', None)
+#options.binary_location = chrome_bin
 options.add_argument('--headless')
 options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')
@@ -87,10 +87,10 @@ options.add_argument('--disable-dev-shm-usage')
 maxcounter=5
 for counter in range(maxcounter):
    try:           
-      driver = webdriver.Chrome(executable_path='chromedriver', chrome_options=options)
+      driver = webdriver.Chrome(chrome_options=options)
       break
    except WebDriverException as e:
-      print("RETRYING INITIALIZATION OF WEBDRIVER! Error: %s" % str(e))
+      print("RETRYING THE INITIALIZATION OF WEBDRIVER! Error: %s" % str(e))
       time.sleep(10)
       if counter==maxcounter-1:
          driver = None
