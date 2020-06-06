@@ -19,3 +19,10 @@ After adding a search feature, the states were succesfully loading their charts 
   ![1](4.png)
   ![1](44.png)
 
+
+
+Jun 3, 2020
+
+The app was changed so that the unstable driver will not cause the app to crash as it will now only run when the data is updated, the scrapped data will now be stored in a table rather than refreshed on each refresh as this allows for a simple database lookup per instance versus having to load an additional page for every client. Therefore this is not only faster but allows for the app to not be dependant on the seemingly unstable chromedriver. In addition to this, a maximum amount of times to start the driver were added with a try-catch statement to allow for the crash to be caught.
+
+  ![1](5.png)
