@@ -19,8 +19,8 @@ covid19stats is an app designed to help visualize the spread of COVID-19 in Amer
   * [Installation](#installation)
 * [Usage](#usage)
 * [Development](#Development)
-* [Heroku](#Heroku)
 * [Docker](#Docker)
+* [Heroku](#Heroku)
 * [Todo](#Todo)
 * [License](#License)
 * [Acknowledgements](#Acknowledgements)
@@ -107,13 +107,23 @@ python manage.py runserver
 
 See [progress](https://github.com/orlovcs/Scrappy/tree/master/progress).
 
+## Docker
+The included Docker Compose files will allow you to run the app in a container with just the two following commands:
+```sh
+sudo docker-compose build
+sudo docker-compose up
+```
+
+Initially there was an attempt to utilize the chromedriver container but it turned out to be easier to download Chrome 83 and the respective chromedriver directly into the base image using the package manager during the building process. This version of Chrome was isolated to work with the version of Selenium used. [This](https://testdriven.io/blog/dockerizing-flask-with-postgres-gunicorn-and-nginx/#postgres) was used as a initial reference for the Dockerfiles and [this](https://github.com/dimmg/dockselpy/blob/master/Dockerfile) was used to install the chromedriver correctly.
+
+
 ## Heroku
 
 To deploy this app to Heroku, install heroku-cli
 ```sh
 curl https://cli-assets.heroku.com/install.sh | sh
 ```
-Login and deploy the app with [these](https://devcenter.heroku.com/articles/creating-apps) docs.
+Log into the CLI and deploy the app by following [these](https://devcenter.heroku.com/articles/creating-apps) docs.
 
 ### Row Compliance
 Since a free account is limited to 10,000 rows, the original dataset needed to be aggregated by precomputing and summing up the cases for each day and then specifying this data by state. With this reduction the app can exist and function normally with under 10,000 rows, instead pulling data from a table created for each state/province. However as the data continues to grow, eventually the tables would be forced to drop the top rows after checking if they are over row capacity.
@@ -136,15 +146,6 @@ As well as dumping the local sql file and uploading it to the dyno manually:
 pg_dump covid > updates.sql
 heroku pg:psql --app YOUR_APP_NAME_HERE < updates.sql
 ```
-
-## Docker
-The included Docker Compose files will allow you to run the app in a container with just the two following commands:
-```sh
-sudo docker-compose build
-sudo docker-compose up
-```
-
-Initially there was an attempt to utilize the chromedriver container but it was easier to download Chrome 83 and the respective chromedriver directly into the base image using the package manager. This version of Chrome was isolated to work with the version of Selenium used. 
 
 ## Todo
 
