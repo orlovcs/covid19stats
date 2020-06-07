@@ -20,6 +20,7 @@ covid19stats is an app designed to help visualize the spread of COVID-19 in Amer
 * [Usage](#usage)
 * [Development](#Development)
 * [Heroku](#Heroku)
+* [Docker](#Docker)
 * [Todo](#Todo)
 * [License](#License)
 * [Acknowledgements](#Acknowledgements)
@@ -42,16 +43,13 @@ The app was initially used to simply import US infection data into PostgreSQL, o
 
 ### Prerequisites
 
-Install the following pip packages.
+Install the required pip packages.
 
-* Selenium
+* virtualenv
 ```sh
-pip install selenium
+pip install virtualenv
 ```
-* alpaca-trade-api-python
-```sh
-pip3 install alpaca-trade-api
-```
+
 ### Installation
 
 [This](https://medium.com/@dushan14/create-a-web-application-with-python-flask-postgresql-and-deploy-on-heroku-243d548335cc) guide serves as a good foundation to initialize the project.
@@ -69,7 +67,7 @@ source env/bin/activate
 ```
 Install all the requirements for pip.
 ```sh
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 Set the env vars from .env.
 ```sh
@@ -139,6 +137,14 @@ pg_dump covid > updates.sql
 heroku pg:psql --app YOUR_APP_NAME_HERE < updates.sql
 ```
 
+## Docker
+The included Docker Compose files will allow you to run the app in a container with just the two following commands:
+```sh
+sudo docker-compose build
+sudo docker-compose up
+```
+
+Initially there was an attempt to utilize the chromedriver container but it was easier to download Chrome 83 and the respective chromedriver directly into the base image using the package manager. This version of Chrome was isolated to work with the version of Selenium used. 
 
 ## Todo
 
