@@ -1,8 +1,0 @@
-
-*.csv
-
-book_data/__pycache__/
-
-/__pycache__/
-
-covid/__pycache__/
