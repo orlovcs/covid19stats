@@ -6,7 +6,7 @@ import numpy as np
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 import time, datetime
-
+import subprocess
 
 
 app = Flask(__name__)
@@ -110,7 +110,10 @@ def get_dash():
 def update_data():
     try:
         print("Executing data.py...")
-        exec(open("data.py").read())
+        #Spawn subprocess for updating since request will timeout otherwise
+        ls_output=subprocess.Popen(["python", "data.py"])
+        #Attempt to indicate progress
+        #yield "x"
         return "Updated"
     except Exception as e:
 	    return(str(e))
