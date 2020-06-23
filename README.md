@@ -108,7 +108,7 @@ python manage.py runserver
 ```
 
 ## API
-An endpoint is available to manually trigger a data refresh on the server.
+An endpoint is available to manually trigger a data refresh on the server. The endpoint triggers a subprocess which calls on ```data.py``` to execute in the background. This is done since waiting for the data refresh during the request causes it to timeout.
 The endpoint can be called with a PUT request on the root URL:
 ```
 curl -i -X PUT http://localhost:5000  
