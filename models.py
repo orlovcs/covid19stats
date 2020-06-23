@@ -61,7 +61,7 @@ class Data():
         return df
 
     #Desc: Groups cases by day
-    #Output: Dataframe
+    #Output: Dataframe 
     def get_daily_totals(self, df):
         df['day'] = pd.to_datetime(df['date']).dt.to_period('D')
         return df

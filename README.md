@@ -18,6 +18,7 @@ covid19stats is an app designed to help visualize the spread of COVID-19 in Amer
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
 * [Usage](#usage)
+* [API](#API)
 * [Development](#Development)
 * [Docker](#Docker)
 * [Heroku](#Heroku)
@@ -105,6 +106,14 @@ kill -9 pid
 python manage.py runserver
 
 ```
+
+## API
+An endpoint is available to manually trigger a data refresh on the server.
+The endpoint can be called with a PUT request on the root URL:
+```
+curl -i -X PUT http://localhost:5000  
+```
+
 ## Development
 
 See [progress](https://github.com/orlovcs/Scrappy/tree/master/progress).

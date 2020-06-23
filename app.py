@@ -106,6 +106,13 @@ def get_dash():
     except Exception as e:
 	    return(str(e))
 
-
+@app.route('/', methods=['PUT'])
+def update_data():
+    try:
+        print("Executing data.py...")
+        exec(open("data.py").read())
+        return "Updated"
+    except Exception as e:
+	    return(str(e))
 if __name__ == '__main__':
     app.run()

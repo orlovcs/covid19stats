@@ -12,6 +12,8 @@ from selenium.common.exceptions import NoSuchElementException, WebDriverExceptio
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 import sys
 
+print("Starting update.")
+
 engine = create_engine(os.environ['DATABASE_URL'])
 
 def run_query(query):
