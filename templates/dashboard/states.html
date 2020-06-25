@@ -75,24 +75,24 @@
 
     <div class="row">
       <script type="text/javascript">
-            all_province_states = {{ all_province_states|safe }}
-            monthly_province_state_dfs = {{monthly_province_state_dfs|safe}}
-            daily_province_state_dfs = {{daily_province_state_dfs|safe}}
+            all_province_states = {{ data['all_province_states']|safe }}
+            monthly_province_state_dfs = {{ data['monthly_province_state_dfs']|safe}}
+            daily_province_state_dfs = {{ data['daily_province_state_dfs']|safe}}
             
         </script>
 
-    {%for i in range(0, all_province_states_len)%} 
+    {%for i in range(0, data['all_province_states_len'])%} 
       
-      <div class="col-lg-4 " data-string="{{all_province_states[i]}}">
+      <div class="col-lg-4 " data-string="{{ data['all_province_states'][i]|safe }}">
         <div class="card">
         <div class="card-header ">
             <div class="row">
               <div class="col-sm text-left">
-                <h2 class="card-title">{{all_province_states[i]}}</h2>
-                {% if monthly_province_state_dfs[i][2][0] %}
-                <h5 class="card-category">Cases: {{monthly_province_state_dfs[i][2][0]|safe}} • Cases/1M Pop: {{monthly_province_state_dfs[i][2][2]|safe}}</h5>          
+                <h2 class="card-title">{{ data['all_province_states'][i]|safe }}</h2>
+                {% if data['monthly_province_state_dfs'][i][2][0]|safe %}
+                <h5 class="card-category">Cases: {{ data['monthly_province_state_dfs'][i][2][0]|safe}} • Cases/1M Pop: {{ data['monthly_province_state_dfs'][i][2][2]|safe}}</h5>          
                 
-                <h5 class="card-category">Deaths: {{monthly_province_state_dfs[i][2][1]|safe}} • Deaths/1M Pop: {{monthly_province_state_dfs[i][2][3]|safe}}</h5>          
+                <h5 class="card-category">Deaths: {{ data['monthly_province_state_dfs'][i][2][1]|safe}} • Deaths/1M Pop: {{ data['monthly_province_state_dfs'][i][2][3]|safe}}</h5>          
                 {% else %}
                 <h5 class="card-category">Cases</h5>
                 {% endif %}
@@ -111,7 +111,7 @@
             </div>
           </div>
           <div class="card-body">
-            <canvas id="{{all_province_states[i]}}"></canvas>
+            <canvas id="{{ data['all_province_states'][i]|safe }}"></canvas>
           </div>
           </div>
       </div>

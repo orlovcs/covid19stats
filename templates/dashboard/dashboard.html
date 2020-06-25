@@ -75,8 +75,8 @@
           <div class="col-12">
             <div class="card card-chart">
               <script type="text/javascript">
-                var us_infections_monthly_list = {{ us_infections_monthly_list|safe }}
-                var us_infections_daily_list = {{ us_infections_daily_list|safe }}
+                var us_infections_monthly_list = {{ data['monthly'] |safe }}
+                var us_infections_daily_list = {{ data['daily'] |safe }}
                 
             </script>
               <div class="card-header ">

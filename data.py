@@ -1,16 +1,15 @@
-import psycopg2 as pg
-import pandas as pd
+
 import io
 import os
-from sqlalchemy import create_engine
-import numpy as np
-import datetime
+import sys
 import time
 import requests
+from sqlalchemy import create_engine
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, WebDriverException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-import sys
+import pandas as pd
+
 
 print("Starting update.")
 
@@ -97,7 +96,7 @@ options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')
 
 #Let the driver attempt to start for only a certain amount of times if it is unstable before giving up
-maxcounter=5
+maxcounter = 5
 for counter in range(maxcounter):
    try:
       if docker_config:        
